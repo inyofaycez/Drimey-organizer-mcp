@@ -94,6 +94,14 @@ elif command == "mkdir":
         entries.setdefault(candidate, {"is_dir": True})
     save(state)
 elif command == "moveto":
+    fail_after = os.environ.get("FAKE_RCLONE_AUTH_FAIL_AFTER_MOVES")
+    if fail_after is not None:
+        state.setdefault("moves_done", 0)
+        if state["moves_done"] >= int(fail_after):
+            print("authorization failed (HTTP 401): Drime token expired", file=sys.stderr)
+            sys.exit(5)
+        state["moves_done"] += 1
+        save(state)
     source = clean(args[1])
     destination = clean(args[2])
     if destination == os.environ.get("FAKE_RCLONE_FAIL_DEST"):
@@ -325,6 +333,48 @@ class DrimeOrganizerTests(unittest.TestCase):
         self.assertTrue(index["stale"])
         self.assertIn("Shows/episode:S01E01.mkv", indexed_paths)
         self.assertIn("Unsorted/episode:S01E02.mkv", indexed_paths)
+
+    def test_execute_stops_on_expired_auth(self):
+        server.refresh_index({})
+        preview = server.plan_organization({"moves": [
+            {
+                "source": "Unsorted/episode:S01E01.mkv",
+                "destination": "Shows/episode:S01E01.mkv",
+            },
+            {
+                "source": "Unsorted/episode:S01E02.mkv",
+                "destination": "Shows/episode:S01E02.mkv",
+            },
+        ]})
+        # The Drime token expires after the first move: the second moveto
+        # fails with an authorization error while earlier stats still worked.
+        os.environ["FAKE_RCLONE_AUTH_FAIL_AFTER_MOVES"] = "1"
+        result = server.execute_organization_plan({"plan_token": preview["plan_token"]})
+        self.assertEqual(result["status"], "stopped_after_failure")
+        self.assertEqual(result["completed"], [{
+            "action": "move",
+            "source": "Unsorted/episode:S01E01.mkv",
+            "destination": "Shows/episode:S01E01.mkv",
+        }])
+        self.assertEqual(result["failed_operation"], {
+            "action": "move",
+            "source": "Unsorted/episode:S01E02.mkv",
+            "destination": "Shows/episode:S01E02.mkv",
+        })
+        self.assertIn("authorization failed", result["error"])
+        self.assertFalse(result["rolled_back"])
+        self.assertTrue(result["index_stale"])
+        entries = self.read_state()["entries"]
+        self.assertIn("Shows/episode:S01E01.mkv", entries)
+        self.assertIn("Unsorted/episode:S01E02.mkv", entries)
+        index = json.loads(Path(os.environ["DRIME_MCP_INDEX"]).read_text(encoding="utf-8"))
+        indexed_paths = {entry["path"] for entry in index["entries"]}
+        self.assertTrue(index["stale"])
+        self.assertIn("Shows/episode:S01E01.mkv", indexed_paths)
+        self.assertIn("Unsorted/episode:S01E02.mkv", indexed_paths)
+        audit = Path(os.environ["DRIME_MCP_AUDIT"]).read_text(encoding="utf-8")
+        self.assertIn('"event":"plan_stopped"', audit)
+        self.assertIn("authorization failed", audit)
 
     def test_execute_refreshes_index_automatically(self):
         server.refresh_index({})
