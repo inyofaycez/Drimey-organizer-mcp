@@ -143,7 +143,7 @@ The audit log records organization previews only when executed, plus each comple
 
 ## Verification
 
-The included test suite uses a fake rclone process and never connects to Drime:
+The included test suite uses a fake rclone process and never connects to Drime. It covers path and Unicode validation, duplicate and overlapping moves, destination conflicts, single-use plan tokens, partial batch failures, expired authentication mid-batch, index refresh and patching, and malformed stdio frames:
 
 ```sh
 cd "$HOME/Applications/drimey-organizer-mcp"
