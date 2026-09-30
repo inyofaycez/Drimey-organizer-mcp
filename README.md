@@ -84,7 +84,7 @@ Clone this repository to a stable private folder, for example:
 
 ```sh
 git clone https://github.com/inyofaycez/Drimey-organizer-mcp.git "$HOME/Applications/drimey-organizer-mcp"
-chmod 700 "$HOME/Applications/drime-organizer-mcp/server.py"
+chmod 700 "$HOME/Applications/drimey-organizer-mcp/server.py"
 ```
 
 Replace every `/Users/YOU` and executable path in the examples with the values from your Mac. Find your absolute executable paths now — the client configuration needs them:
@@ -146,7 +146,7 @@ The audit log records organization previews only when executed, plus each comple
 The included test suite uses a fake rclone process and never connects to Drime:
 
 ```sh
-cd "$HOME/Applications/drime-organizer-mcp"
+cd "$HOME/Applications/drimey-organizer-mcp"
 python3 -m unittest discover -s tests -v
 python3 -m py_compile server.py
 ```

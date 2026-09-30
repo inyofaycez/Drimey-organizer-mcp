@@ -4,7 +4,7 @@
 name = "drime"
 transport = "stdio"
 command = "/opt/homebrew/bin/python3"
-args = ["/Users/YOU/Applications/drime-organizer-mcp/server.py"]
+args = ["/Users/YOU/Applications/drimey-organizer-mcp/server.py"]
 env = { DRIME_MCP_REMOTE = "drime-mcp:", RCLONE_BIN = "/opt/homebrew/bin/rclone", RCLONE_CONFIG = "/Users/YOU/.config/rclone/drime-mcp.conf", DRIME_MCP_INDEX = "/Users/YOU/Library/Caches/drime-organizer-mcp/index.json", DRIME_MCP_AUDIT = "/Users/YOU/Library/Logs/drime-organizer-mcp/audit.jsonl" }
 startup_timeout_sec = 15
 tool_timeout_sec = 900
