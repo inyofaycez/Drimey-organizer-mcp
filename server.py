@@ -27,8 +27,7 @@ PLAN_TTL_SECONDS = 600
 TEXT_EXTENSIONS = {
     ".txt", ".md", ".markdown", ".csv", ".tsv", ".json", ".jsonl",
     ".xml", ".html", ".htm", ".yaml", ".yml", ".toml", ".log",
-    ".nfo", ".srt", ".vtt", ".ass", ".ssa", ".sub", ".m3u", ".m3u8",
-    ".pls", ".cue", ".r", ".py", ".js", ".ts", ".sh", ".sql",
+    ".r", ".py", ".js", ".ts", ".sh", ".sql",
     ".tex", ".bib",
 }
 PLANS: dict[str, dict] = {}
@@ -354,7 +353,7 @@ def search_index(arguments: dict) -> dict:
 def read_text(arguments: dict) -> dict:
     path = safe_path(arguments.get("path", ""), allow_empty=False)
     if PurePosixPath(path).suffix.casefold() not in TEXT_EXTENSIONS:
-        raise ValueError("This tool only reads approved text, subtitle, NFO, and playlist extensions")
+        raise ValueError("This tool only reads approved text, code, and markup extensions")
     entry = stat_any(path)
     if entry.get("IsDir"):
         raise ValueError("Choose a file rather than a folder")
@@ -671,7 +670,7 @@ TOOLS = [
     },
     {
         "name": "read_text",
-        "description": "Read one approved UTF-8 text/subtitle/NFO/playlist file, up to 2,000,000 bytes.",
+        "description": "Read one approved UTF-8 text/code/markup file, up to 2,000,000 bytes.",
         "annotations": {"readOnlyHint": True, "destructiveHint": False},
         "inputSchema": {"type": "object", "properties": {"path": {"type": "string"}},
                         "required": ["path"], "additionalProperties": False},

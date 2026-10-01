@@ -139,7 +139,7 @@ class DrimeOrganizerTests(unittest.TestCase):
             "Unsorted/episode:S01E01.mkv": {"is_dir": False, "content": "video"},
             "Unsorted/episode:S01E02.mkv": {"is_dir": False, "content": "video2"},
             "Notes": {"is_dir": True},
-            "Notes/library.nfo": {"is_dir": False, "content": "hello media"},
+            "Notes/library.txt": {"is_dir": False, "content": "hello media"},
             "Existing": {"is_dir": True},
         }}), encoding="utf-8")
         self.old_env = os.environ.copy()
@@ -258,7 +258,7 @@ class DrimeOrganizerTests(unittest.TestCase):
         self.assertFalse(result["stale"])
 
     def test_read_text_with_two_megabyte_policy(self):
-        result = server.read_text({"path": "Notes/library.nfo"})
+        result = server.read_text({"path": "Notes/library.txt"})
         self.assertEqual(result["content"], "hello media")
         with self.assertRaises(ValueError):
             server.read_text({"path": "Unsorted/episode:S01E01.mkv"})
