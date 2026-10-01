@@ -1,5 +1,7 @@
 # Drime Organizer MCP
 
+**Ecosystem:** built on [rclone](https://github.com/rclone/rclone) and its native [Drime backend](https://rclone.org/drime/), speaking the [Model Context Protocol](https://github.com/modelcontextprotocol/modelcontextprotocol) so any MCP-capable client — such as [Mistral Vibe](https://github.com/mistralai/mistral-vibe) — can drive it.
+
 A local MCP server that lets an AI browse and safely organize your Drime media storage through rclone's native Drime backend.
 
 **A European chain:** Drime is a French, GDPR-compliant cloud with EU-only data centers; Mistral Vibe is a French AI client; this server runs entirely on your own machine. Storage, AI, and everything in between can stay European.
