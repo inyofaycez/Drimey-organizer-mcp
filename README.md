@@ -110,11 +110,11 @@ Expected: within a few seconds the AI lists your top-level Drime folders. If it 
 
 ## First use
 
-1. Ask the AI to run `refresh_index`. A large media library can take several minutes.
+1. Ask the AI to run `refresh_index`. A large drive can take several minutes.
 2. Search by filename/path with `search_index`, or browse live with `list_folder`.
 3. Ask for an organization proposal, for example:
 
-   > Find episodes currently under `Unsorted`, propose suitable folders under `Shows`, and call only `plan_organization`. Show me the complete preview. Do not execute it.
+   > Propose suitable folders for the files currently under `Unsorted` and call only `plan_organization`. Show me the complete preview. Do not execute it.
 
 4. Inspect every source and destination in the preview. If correct, explicitly approve that exact preview. Your client should then ask again before permitting `execute_organization_plan`.
 
@@ -137,7 +137,7 @@ The audit log records organization previews only when executed, plus each comple
 
 - The 100-item limit counts folder creations and moves together.
 - Rename is represented as a move from the old path to the new path.
-- The 2 MB content reader accepts only explicitly listed text, subtitle, NFO, playlist, code, and markup extensions. It cannot read media binaries or PDFs.
+- The 2 MB content reader accepts only explicitly listed text, code, and markup extensions. It cannot read binary files or PDFs.
 - A batch is not a transaction. If the network fails after item 17, those 17 changes remain, the MCP stops, the index is marked stale, and the result tells you exactly what completed.
 - The Mac needs to be on only while you use this local MCP. Nothing here gives mobile/cloud ChatGPT direct access to it.
 
@@ -158,7 +158,7 @@ After those tests, verify the real dedicated remote with the read-only `rclone l
 - **Server refuses to start: "RCLONE_CONFIG must point to a dedicated rclone configuration"** — the client environment block is missing `RCLONE_CONFIG`. Add it (pointing at the config file from step 1) and restart the client. This refusal is deliberate: without it, rclone would silently fall back to your default config and expose every remote in it.
 - **rclone offers no `drime` storage type, or commands fail with `unknown command`** — your rclone is older than 1.73. Check with `rclone version` and upgrade (`brew upgrade rclone`).
 - **`authorization failed` or HTTP 401** — wrong or expired Drime token. Recreate it in Drime **Settings → Developer** and update the config with `rclone config --config "$HOME/.config/rclone/drime-mcp.conf"`.
-- **First `refresh_index` seems to hang** — a large library takes minutes for the full listing. The example client configs set a 900-second tool timeout; if yours is shorter, raise it.
+- **First `refresh_index` seems to hang** — a large drive takes minutes for the full listing. The example client configs set a 900-second tool timeout; if yours is shorter, raise it.
 - **A plan stops with "destination already exists"** — expected behavior; the MCP refuses to merge or overwrite at plan time. If another process writes to the same destination between preview and execution, that race is outside its control. Pick a different destination or move the conflicting item first.
 - **Index is stale after a partial failure** — run `refresh_index` before planning again, as the failure result tells you.
 
